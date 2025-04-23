@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Python / Data Science specific ignores (add these lines if they are missing)
+venv/                   # Ignore the virtual environment folder (replace 'venv' if you named it differently)
+__pycache__/            # Ignore Python cache files
+*.csv                   # Ignore the data file itself if it's very large
+*.xlsx                  # Ignore Excel files if you happen to use them for data
+.ipynb_checkpoints/     # Ignore temporary files created by Jupyter Notebooks
