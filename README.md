@@ -1,69 +1,122 @@
-# Olympic Swimming Data Analysis and Prediction (1912-2020)
 
-This project analyzes Olympic swimming results and predicts the gold medal time for the 100m freestyle event at the 2028 Olympics using machine learning.
+# 🏊‍♂️ Olympic Swimming Analysis & 2028 Gold‑Medal Time Prediction
 
-## Project Structure
-- `data/Olympic_Swimming.csv`: Main dataset (1912-2020)
-- `Notebooks/eda_and_preprocessing.ipynb`: Exploratory Data Analysis (EDA) and data cleaning
-- `Notebooks/prediction_100m_gold_2028.ipynb`: ML pipeline for predicting the 2028 100m freestyle gold medal time
+This repository explores **112 years of Olympic swimming history (1912 → 2020)** and uses machine‑learning to forecast the **100 m freestyle gold‑medal time at the 2028 Los Angeles Games**.
 
-## Analysis Highlights
+---
 
-### Evolution of 100m Gold-Medal Times
-The analysis revealed significant improvements in swimming performance across all strokes over time:
-- All four strokes (Freestyle, Backstroke, Breaststroke, Butterfly) show consistent improvement trends
-- Freestyle remains the fastest stroke throughout Olympic history
-- The rate of improvement has slowed in recent decades, suggesting approaching physical limits
+## 📂 Project Layout
 
-### Gender Gap Analysis
-A detailed examination of 100m event times by gender showed:
-- Consistent performance differences across all strokes
-- Similar improvement rates between men and women
-- Smallest gender gap in breaststroke events
-- Greatest gender gap in butterfly events
+```text
+.
+├── data/
+│   └── Olympic_Swimming.csv        # Cleaned event‑level dataset (1912‑2020)
+├── Notebooks/
+│   ├── eda_and_preprocessing.ipynb # Exploratory data analysis + feature prep
+│   └── prediction_100m_gold_2028.ipynb # ML pipeline & 2028 prediction
+├── models/                         # Saved model artefacts (ignored in Git)
+├── outputs/                        # Figures & produced tables
+├── requirements.txt
+└── README.md                       # ← you are here
+```
 
-### Top Performing Nations
-Analysis of gold medal distribution revealed:
-- United States dominance in Olympic swimming
-- Strong performances from Australia, East Germany, and other swimming powerhouses
-- Recent emergence of new competitive nations
+Large binaries (datasets, trained models) are excluded via `.gitignore`.
 
-### Event Growth and Evolution
-The total number of medals awarded per year shows:
-- Steady increase in event count over time
-- Major expansions in 1968 and 1996
-- Equal representation of men's and women's events in modern Olympics
+---
 
-### Performance Improvement Trends
-Statistical analysis of improvement rates showed:
-- Average improvement of 0.2-0.3 seconds per Olympic cycle in 100m events
-- Faster improvement rates in newer strokes (butterfly)
-- Slowing improvement rates in established strokes (freestyle)
+## ❓ Research Questions
 
-### Relay vs Individual Performance
-Analysis of relay versus individual event speeds revealed:
-- Significantly faster times in relay segments
-- Effect consistent across both genders
-- Approximately 2-3% improvement in relay legs versus individual races
+1. **How have 100 m gold‑medal times evolved by stroke and gender since 1912?**  
+2. **Which countries have dominated Olympic swimming, and how has dominance shifted over time?**  
+3. **What will be the winning time in the men’s 100 m freestyle final at LA 2028?**
 
-## Prediction Pipeline
-- Train/test split (train: all years before 2020, test: 2020)
-- Feature scaling (StandardScaler)
-- LightGBM regression model
-- Robust handling of categorical features
-- Prediction for 2028 using the most common feature values
+---
 
-## Results (as of April 2025)
-- **2020 actual gold medal times (100m freestyle):**
-  - Men: 47.02 seconds
-  - Women: 51.96 seconds
-- **Model MSE on 2020 test set:** 0.637
-- **Predicted 100m freestyle gold medal time for 2028:** 48.06 seconds
+## 🔍 Key Insights (EDA)
 
-## Conclusion
-The model provides a data-driven estimate for the 2028 Olympic 100m freestyle gold medal time, based on historical trends and advanced ML techniques. Our analysis shows:
-- A slowing rate of improvement in recent decades
-- Strong predictive power with an MSE of 0.637
-- Conservative estimates that account for the natural limits of human performance
+| Theme | Highlight |
+|-------|-----------|
+| **Performance trend** | All four strokes show steady improvements; slope flattens after 2000 indicating physiological limits. |
+| **Gender gap** | Average male–female gap ≈ 9 % across strokes; smallest in breaststroke, largest in butterfly. |
+| **Nation dominance** | USA leads 🇺🇸 (> 40 % of golds), followed by Australia 🇦🇺 and historically East Germany 🇩🇪. |
+| **Event growth** | Swimming medal events grew from 9 (1912) to 37 (2020), with parity in men/women events by 1996. |
+| **Relay boost** | Relay split times are ≈ 2–3 % faster than equivalent individual swims. |
 
-Actual results may vary due to unforeseen factors such as technological advances, rule changes, or exceptional individual performances, but this serves as a strong statistical baseline for future performance expectations.
+---
+
+## 🛠️ Modelling Pipeline
+
+| Step | Details |
+|------|---------|
+| **Split** | Train = 1912‑2016, Test = 2020 (hold‑out Games). |
+| **Features** | `year`, `gender`, `stroke`, `event_distance`, 4‑cycle moving average, tech‑era dummy, etc. |
+| **Pre‑processing** | StandardScaler for numeric, OneHotEncoder for categoricals (wrapped in `ColumnTransformer`). |
+| **Model** | **LightGBM Regressor** (`objective='regression_l2'`, `metric='l2'`). |
+| **Evaluation** | MSE on 2020 hold‑out = **0.637 s²**. |
+| **Forecast** | Predicted 2028 100 m freestyle gold‑medal time = **48.06 s**. |
+
+---
+
+## 📊 Results Snapshot
+
+```text
+2020 actual (Tokyo):
+  • Men  : 47.02 s
+  • Women: 51.96 s
+
+2028 prediction (LightGBM):
+  • Men  : 48.06 s
+```
+
+> Interpretation: The model expects a slight regression versus the Tokyo WR‑level swim, reflecting plateauing improvements and post‑suit‑era trend.
+
+---
+
+## 🚀 Quick Start
+
+```bash
+# Clone the repo
+git clone https://github.com/PrielDavid/olympic_swimming_analysis.git
+cd olympic_swimming_analysis
+
+# Create & activate environment
+python -m venv venv
+source venv/bin/activate        # On Windows: venv\Scripts\activate
+
+# Install requirements
+pip install -r requirements.txt
+
+# Launch notebooks
+jupyter lab Notebooks/eda_and_preprocessing.ipynb
+```
+
+---
+
+## ♻️ Reproducibility
+
+* Random seed fixed (`random_state=42`).
+* End‑to‑end pipeline encapsulated in Scikit‑learn `Pipeline`.
+* Models & encoders dumped via `joblib` in `/models`.
+* Notebook cell execution order preserved.
+
+---
+
+## 🔮 Future Work
+
+* Add **SHAP** explainability to quantify feature impacts.  
+* Incorporate **FINA World Championship** data for richer trend estimation.  
+* Hyper‑parameter optimisation with **Optuna**.  
+* Deploy an interactive **Streamlit** dashboard for exploring trends and forecasts.
+
+---
+
+## 👤 Author
+
+**Priel Davidpor** – Economics & Statistics BSc, Ben‑Gurion University  
+Connect on [LinkedIn](https://www.linkedin.com/in/priel-davidpor/).
+
+---
+
+## 📄 License
+
+Distributed under the MIT License — see `LICENSE` for details.
